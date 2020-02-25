@@ -1,0 +1,35 @@
+.DS_Store
+.env
+.flaskenv
+*.pyc
+*.pyo
+env/
+ENV/
+venv/
+.venv/
+.virtualenv/
+env*
+dist/
+build/
+*.egg
+*.egg-info/
+_mailinglist
+.tox/
+.cache/
+.pytest_cache/
+.idea/
+docs/_build/
+
+# Redis
+redis-stable/
+redis-stable.tar.gz
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+*,cover
+logs/
+*.log
+
+.vscode/
