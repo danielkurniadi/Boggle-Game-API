@@ -1,7 +1,6 @@
 # Import library
 import os
 import logging
-import redis
 
 from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
@@ -65,24 +64,6 @@ WARNING: ORDER IS IMPORTANT !!!
 """
 
 """
-# DEFINE REDIS
-"""
-
-
-def make_redis():
-    r = redis.Redis(
-        host=flask_app.config['REDIS_HOST'],
-        port=flask_app.config['REDIS_PORT'],
-        db=flask_app.config['REDIS_DB'],
-        password=flask_app.config['REDIS_PASSWORD'],
-    )
-    return r
-
-
-flask_app.redis_cache = make_redis()
-
-
-"""
 DEFINE DB
 """
 setup_db()
@@ -98,20 +79,6 @@ for blueprint in get_register_blueprints()]
 if not unit_test_mode:
     # disable logging for the unit test
     setup_logging()
-
-
-"""
-ERROR HANDLER FOR BUSINESS LOGIC
-"""
-
-
-@flask_app.errorhandler(AccountInvalidToken)
-def account_invalid_token_func(error):
-    return jsonify({
-        'result': False,
-        # 'error_code': ACCOUNT_TOKEN_INVALID,
-        # 'error_message': ACCOUNT_TOKEN_INVALID_MESSAGE,
-    })
 
 
 """
