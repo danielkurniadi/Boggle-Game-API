@@ -4,7 +4,7 @@ from flask import jsonify, request
 
 from app import flask_app
 from app.bridge.constants.error import InvalidRequest
-from app.bridge.error import InvalidRequestError, get_msg_error
+from app.bridge.error import get_msg_error
 
 
 def request_validator(validator):
@@ -26,7 +26,7 @@ def request_validator(validator):
                     param.update(dict(query=request.args))
                 validator(**param)
 
-            except InvalidRequestError as e:
+            except AssertionError as e:
                 flask_app.logger.error(
                     'validation error: `%s` | request: `%s`',
                     str(e), str(request)
@@ -53,17 +53,15 @@ def assert_key(data, key, var_type, optional=False):
 
     if not isinstance(data, list):
         key_required_msg = 'field `%s` is required' % key
-        assert (key in data) or raise InvalidaRequestError(key_required_msg)
+        assert (key in data), key_required_msg
 
     type_error_msg = 'field `%s` expected to be `%s` but received `%s`' % (
         key, var_type, type(data[key]))
 
     if isinstance(var_type, list):
-        assert (type(data[key]) in var_type) or \
-            raise InvalidRequestError(type_error_msg)
+        assert (type(data[key]) in var_type), type_error_msg
     else:
-        assert isinstance(data[key], var_type) or \
-            raise InvalidRequestError(type_error_msg)
+        assert isinstance(data[key], var_type), type_error_msg
 
 
 def assert_length(data, key, length):
@@ -74,12 +72,11 @@ def assert_length(data, key, length):
     :type: var_type: type
     """
     key_required_msg = 'field `%s` is required' % key
-    assert (key in data) or raise InvalidRequestError(key_required_msg)
+    assert (key in data), key_required_msg
 
     length_error_msg = (
         'field `%s` expected to be'
         '`%s` length but received `%s`'
         % (key, length, len(data[key]))
     )
-    assert (len(data[key]) == length) or \
-        InvalidRequestError(length_error_msg)
+    assert (len(data[key]) == length), length_error_msg

@@ -1,5 +1,4 @@
 import string
-from app.bridge.error import InvalidRequestError
 from app.bridge.decorators.validator import (
     request_validator,
     assert_key,
@@ -16,19 +15,20 @@ def validate_create_game_request(payload):
 
     # verify duration
     assert_key(payload, 'duration', int)
-    assert duration > 0 or InvalidRequestError('Duration must be positive integer')
+    duration_msg = 'Duration must be positive integer'
+    assert duration > 0, duration_msg
 
     # verify board
     if 'board' in payload:
         assert_key(payload, 'board', str)
         board_elems = board.split(', ')
+        board_invalid_len_msg = 'Invalid boogle board length'
+        
+        assert len(board_elems) == 16, 
 
-        assert len(board_elems) == 16 or \
-            InvalidRequestError('Invalid boogle board length')
-
+        board_invalid_element_msg = 'Invalid boogle board string. Must contain only letters or *'
         for elem in board_elems:
-            assert elem in allowed_character or \
-                InvalidRequestError('Invalid boogle board string. Must contain only letters or *')
+            assert elem in allowed_character, board_invalid_element_msg
 
 
 @request_validator
