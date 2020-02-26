@@ -29,7 +29,7 @@ def api_post_boogle():
 
 @mod_boogle.route('/games/<game_id>', methods=['GET'])
 def api_get_boogle(game_id):
-    error_code, boogle_game = boogle_manager.get_boogle_by_game_id(game_id)
+    error_code, boogle_game = boogle_manager.get_boogle_game(game_id)
 
     return jsonify({
         **get_msg_error(error_code),
@@ -41,7 +41,7 @@ def api_get_boogle(game_id):
 @update_game_validator
 def api_put_boogle(game_id):
     payload = dict(request.json)
-    error_code, boogle_game = boogle_manager.update_boogle_by_game_id(game_id, **payload)
+    error_code, boogle_game = boogle_manager.update_boogle_game(game_id, **payload)
 
     return jsonify({
         **get_msg_error(error_code),
