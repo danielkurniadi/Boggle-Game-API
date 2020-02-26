@@ -1,6 +1,6 @@
 from functools import wraps
 from app import flask_app
-from app.bridge.constants.error import ServerOk, DatabaseError
+from app.bridge.error.error_code import ServerOk, DatabaseError
 
 
 def db_exception(f):
