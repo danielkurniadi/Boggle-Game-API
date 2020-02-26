@@ -3,8 +3,7 @@ from functools import wraps
 from flask import jsonify, request
 
 from app import flask_app
-from app.bridge.constants.error import InvalidRequest
-from app.bridge.error import get_msg_error
+from app.bridge.error.error_code import InvalidRequest
 
 
 def request_validator(validator):
@@ -21,9 +20,9 @@ def request_validator(validator):
                 param = {}
                 validator_args = inspect.getfullargspec(validator).args
                 if 'payload' in validator_args:
-                    param.update(dict(payload=request.json))
+                    param.update(payload = request.json or {})
                 if 'query' in validator_args:
-                    param.update(dict(query=request.args))
+                    param.update(query = request.args or {})
                 validator(**param)
 
             except AssertionError as e:
@@ -31,7 +30,7 @@ def request_validator(validator):
                     'validation error: `%s` | request: `%s`',
                     str(e), str(request)
                 )
-                return jsonify(get_msg_error(InvalidRequest(str(e))))
+                return jsonify(InvalidRequest(str(e)).to_dict())
 
             return func(*args, **kwargs)
 
