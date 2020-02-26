@@ -10,7 +10,6 @@ allowed_character = set(string.ascii_uppercase + '*')
 
 @request_validator
 def validate_create_game_request(payload):
-    assert_key(payload, 'id', int)
     assert_key(payload, 'random', bool)
 
     # verify duration
@@ -33,6 +32,5 @@ def validate_create_game_request(payload):
 
 @request_validator
 def validate_update_game_request(payload):
-    assert_key(payload, 'id', int)
     assert_key(payload, 'token', str)
     assert_key(payload, 'word', str)
