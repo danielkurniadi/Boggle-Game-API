@@ -16,7 +16,7 @@ flask_app.config.from_object('config.flask_config')
 
 # Define the database object which is imported
 # by modules and controllers
-db = SQLAlchemy(flask_app)
+# db = SQLAlchemy(flask_app)
 unit_test_mode = os.environ.get('UNIT_TEST_MODE', False)
 
 
@@ -55,7 +55,10 @@ def setup_logging():
 
 def get_register_blueprints():
     # Import Blueprints here ...
-    return []
+    from app.boogle.views.boogle_views import mod_boogle
+    return [
+        mod_boogle,
+    ]
 
 
 """
@@ -66,7 +69,7 @@ WARNING: ORDER IS IMPORTANT !!!
 """
 DEFINE DB
 """
-setup_db()
+# setup_db()
 
 
 """
