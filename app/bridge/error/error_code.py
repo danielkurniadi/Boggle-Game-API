@@ -38,7 +38,7 @@ class Error(BaseCode):
         return self.message
 
 
-class DatabaseError(Error):
+class ResourceNotFound(Error):
     error_code = 2
     http_code = 404
 
@@ -51,3 +51,8 @@ class OperationNotSupported(Error):
 class InvalidRequest(Error):
     error_code = 4
     http_code = 400
+
+
+class DatabaseError(Error):
+    error_code = 5
+    http_code = 500
