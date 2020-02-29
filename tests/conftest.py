@@ -24,8 +24,8 @@ def boggle_matrix():
 
 
 @pytest.fixture
-def boggle_string():
-    return rand_string(16, 16)
+def board_string():
+    return 'ACEDLUG*E*HTGAFK'
 
 
 @pytest.fixture
