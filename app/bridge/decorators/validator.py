@@ -20,7 +20,7 @@ def request_validator(validator):
                 param = {}
                 validator_args = inspect.getfullargspec(validator).args
                 if 'payload' in validator_args:
-                    param.update(payload = request.json or {})
+                    param.update(payload = request.get_json())
                 if 'query' in validator_args:
                     param.update(query = request.args or {})
                 validator(**param)
