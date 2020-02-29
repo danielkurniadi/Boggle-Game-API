@@ -34,6 +34,7 @@ def get_or_create_boggle_board(random, corpus_id, board_string=None,
         return board
 
     # otherwise create new board
+    board_string = normalise_board_string(board_string)
     board = Board(board_string=board_string, corpus=corpus_id)
 
     # prepare for solving board
@@ -117,9 +118,13 @@ def generate_board_string(word_counter=None):
     return ''.join(random.choices(choices, weights=weights, k=SIZE*SIZE))
 
 
+def normalise_board_string(string):
+    return string.replace(' ', '').replace(',', '')
+
+
 def board_string_to_matrix(string):
     if len(string) != SIZE * SIZE:
-        raise ValueError("Must enter 4*4 grid (16 characters)")
+        return OperationNotSupported("Must enter 4*4 grid (16 characters)")
 
     return [list(string[i:i+SIZE])
             for i in range(0, SIZE*SIZE, SIZE)]
