@@ -3,26 +3,38 @@ import os
 import logging
 
 from flask import Flask, jsonify
-from flask_sqlalchemy import SQLAlchemy
+from flask_mongoengine import MongoEngine
 from werkzeug.exceptions import HTTPException
 from logging.handlers import TimedRotatingFileHandler
 
 
 # Define the WSGI application object
 flask_app = Flask(__name__)
+flask_app.url_map.strict_slashes = False
 
 # Configurations
 flask_app.config.from_object('config.flask_config')
 
+# MongoDB database connection
+db = MongoEngine(flask_app)
+
 # Define the database object which is imported
 # by modules and controllers
-# db = SQLAlchemy(flask_app)
 unit_test_mode = os.environ.get('UNIT_TEST_MODE', False)
 
 
 def setup_db():
     # Import DB models here ...
-    db.create_all()
+    from app.game.models.board_model import Board
+    from app.game.models.corpus_model import Corpus
+    from app.game.models.game_model import Game
+
+    # setup default corpus
+    from app.game.data_access.corpus_model_manager import get_or_create_corpus
+    get_or_create_corpus(
+        corpus_name=flask_app.config['DEFAULT_CORPUS_NAME'],
+        corpus_path=flask_app.config['DEFAULT_CORPUS_PATH']
+    )
 
 
 def setup_logging():
@@ -55,21 +67,23 @@ def setup_logging():
 
 def get_register_blueprints():
     # Import Blueprints here ...
-    from app.boogle.views.boogle_views import mod_boogle
+    from app.game.views.game_views import mod_game
+
     return [
-        mod_boogle,
+        mod_game,
     ]
 
 
 """
-set up all the method for the Flask App
+Setup all the methods for Flask App
 WARNING: ORDER IS IMPORTANT !!!
 """
+
 
 """
 DEFINE DB
 """
-# setup_db()
+setup_db()
 
 
 """
@@ -80,21 +94,10 @@ BLUEPRINT REGISTER
 for blueprint in get_register_blueprints()]
 
 if not unit_test_mode:
-    # disable logging for the unit test
+    # disable file logging for the unit test
     setup_logging()
 
 
 """
 ERROR HANDLER FOR HTTP ERROR
 """
-
-
-@flask_app.errorhandler(HTTPException)
-def http_error(e):
-    flask_app.logger.error('http_error|{}'.format(e))
-    return jsonify({
-        'result': False,
-        'error_name': e.name,
-        'error_message': e.description,
-        'error_code': e.code
-    }), e.code

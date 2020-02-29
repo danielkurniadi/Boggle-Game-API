@@ -20,7 +20,7 @@ def request_validator(validator):
                 param = {}
                 validator_args = inspect.getfullargspec(validator).args
                 if 'payload' in validator_args:
-                    param.update(payload = request.json or {})
+                    param.update(payload = request.get_json())
                 if 'query' in validator_args:
                     param.update(query = request.args or {})
                 validator(**param)
@@ -30,7 +30,7 @@ def request_validator(validator):
                     'validation error: `%s` | request: `%s`',
                     str(e), str(request)
                 )
-                return jsonify(InvalidRequest(str(e)).to_dict())
+                return jsonify(InvalidRequest(str(e)).to_dict()), 400
 
             return func(*args, **kwargs)
 
