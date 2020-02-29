@@ -7,7 +7,7 @@ from app import flask_app
 
 if __name__ == '__main__':
     # Load environment variables from file
-    dotenv_path = join(dirname(__file__), '_env')
+    dotenv_path = join(dirname(__file__), '.env')
     load_dotenv(dotenv_path)
 
     # Run WSGI application
