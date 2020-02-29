@@ -3,7 +3,7 @@ from mongoengine import errors as mongod_error
 
 from app import flask_app
 from app.bridge.error.error_code import (
-    ServerOk, ResourceNotFound,
+    ServerOk, Error, ResourceNotFound,
     DatabaseError, OperationNotSupported,
 )
 
@@ -12,8 +12,13 @@ def db_exception(f):
     def wrapped(*args, full=False, **kwargs):
         try:
             result = f(*args, **kwargs)
-            if result is None:
-                return ResourceNotFound('Resource Not Found')
+
+            if isinstance(result, Error):
+                return result
+
+            elif result is None:
+                return ResourceNotFound('Resource Not Found.')
+
             return result.to_json(full=full)
 
         except (mongod_error.NotUniqueError, mongod_error.ValidationError) as e:
