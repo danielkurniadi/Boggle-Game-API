@@ -9,11 +9,11 @@ class Corpus(db.Document):
     filepath        = db.StringField(required=True)
     prefix_trie     = db.DictField(required=True)
 
-    def to_json(self):
+    def to_json(self, full=False):
         corpus_json = {
-            'name'       : self.name,
-            'filepath'   : self.filepath,
-            'prefix_trie': self.prefix_trie
+            'id': str(self.id),
+            'name': self.name,
+            'filepath': self.filepath
         }
         return corpus_json
 

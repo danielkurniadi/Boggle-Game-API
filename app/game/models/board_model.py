@@ -16,13 +16,14 @@ class Board(db.Document):
     solution        = db.ListField(db.StringField(max_length=16))
     corpus          = db.ReferenceField(Corpus, reverse_delete_rule=mongoengine.DO_NOTHING)
 
-    def to_json(self):
+    def to_json(self, full=False):
         board_json = {
+            'id': str(self.id),
             'board_string': self.board_string,
         }
         return board_json
 
-    def check_answer(word):
+    def check_answer(self, word):
         return (word in self.solution)
 
     def __repr__(self):

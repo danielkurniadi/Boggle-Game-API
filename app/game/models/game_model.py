@@ -2,7 +2,7 @@ import mongoengine
 from datetime import datetime, timedelta
 
 from app import flask_app, db
-from app.game.models import Board
+from app.game.models.board_model import Board
 
 
 POINT_PER_WORD = 10
@@ -24,7 +24,7 @@ class Game(db.Document):
     @property
     def timeleft(self):
         elapsed = datetime.utcnow() - self.created
-        return int(elapsed.total_seconds())
+        return self.duration - int(elapsed.total_seconds())
 
     def check_expired(self):
         return self.timeleft <= 0
@@ -37,7 +37,7 @@ class Game(db.Document):
 
     def to_json(self, full=False):
         game_json = {
-            'id'    : self.id,
+            'id'    : str(self.id),
             'token' : self.token,
             'board' : self.board.board_string,
             'duration': self.duration
