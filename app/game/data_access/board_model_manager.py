@@ -11,6 +11,7 @@ from app.game.models.board_model import Board
 from app.game.models.corpus_model import VALUE_SYM
 from app.game.data_access import corpus_model_manager
 
+from app.bridge.decorators.db_exception import db_exception
 from app.bridge.error.error_code import OperationNotSupported
 
 
@@ -18,7 +19,8 @@ from app.bridge.error.error_code import OperationNotSupported
 # MODEL MANAGER
 # ----------------------
 
-def create_boggle_board(random, corpus_id, board_string=None,
+@db_exception
+def get_or_create_boggle_board(random, corpus_id, board_string=None,
                         word_counter=None):
     if random == True and board_string is None:
         board_string = generate_board_string(word_counter)
@@ -26,8 +28,13 @@ def create_boggle_board(random, corpus_id, board_string=None,
     elif random == False and board_string is None:
         board_string = 'TAP*EAKSOBRSS*XD'
 
+    # find board with same board string and corpus
+    board = Board.objects(board_string=board_string, corpus=corpus_id).first()
+    if board is not None:
+        return board
+
+    # otherwise create new board
     board = Board(board_string=board_string, corpus=corpus_id)
-    board.save()
 
     # prepare for solving board
     board_matrix = board_string_to_matrix(board_string)
@@ -42,6 +49,7 @@ def create_boggle_board(random, corpus_id, board_string=None,
     return board
 
 
+@db_exception
 def get_boggle_board_by_id(board_id):
     return Board.objects(id=board_id).first()
 

@@ -1,5 +1,6 @@
 import os
 
+from app.bridge.decorators.db_exception import db_exception
 from app.bridge.error.error_code import OperationNotSupported
 from app.bridge.managers.corpus_file_manager import load_words_from_corpus_file
 from app.game.models.corpus_model import Corpus, PrefixTrieNode
@@ -9,11 +10,13 @@ from app.game.models.corpus_model import Corpus, PrefixTrieNode
 # MODEL MANAGER
 # --------------------------
 
+@db_exception
 def get_corpus_by_name(name):
     corpus = Corpus.objects(name=name).first()
     return corpus
 
 
+@db_exception
 def get_or_create_corpus(corpus_name, corpus_path):
     corpus = Corpus.objects(name=corpus_name).first()
 
