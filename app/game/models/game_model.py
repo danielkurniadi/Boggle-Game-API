@@ -27,19 +27,20 @@ class Game(db.Document):
         return self.duration - int(elapsed.total_seconds())
 
     def check_expired(self):
-        return self.timeleft <= 0
+        return self.timeleft < 0
 
     def check_repeat(self, word):
         return (word in self.found_words)
 
-    def increment_points(self):
-        self.points += POINT_PER_WORD
+    def increment_points(self, point):
+        self.points += point
 
     def to_json(self, full=False):
+        board = ', '.join(self.board.board_string)
         game_json = {
             'id'    : str(self.id),
             'token' : self.token,
-            'board' : self.board.board_string,
+            'board' : board,
             'duration': self.duration
         }
 
