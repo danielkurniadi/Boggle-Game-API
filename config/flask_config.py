@@ -16,10 +16,11 @@ DEBUG = os.environ.get('DEBUG', False)
 ENV = os.environ.get('ENV', 'test')  # Flask Environment mode: development, test, production
 
 # Define the database - we are working with
-# SQLite for this example
-# SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://user:password@127.0.0.1:3306/boogle'
-SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URI']
-SQLALCHEMY_TRACK_MODIFICATIONS = False
+# MongoDB for example:
+# mongodb://localhost:27017/dbname
+MONGODB_SETTINGS = {
+    'host': os.environ['DATABASE_URI']
+}
 DATABASE_CONNECT_OPTIONS = {}
 TRAP_HTTP_EXCEPTIONS = True
 
@@ -38,3 +39,13 @@ CSRF_SESSION_KEY = 'secret'
 
 # Secret key for signing cookies
 SECRET_KEY = os.environ.get('JWT_ENCRYPTION_KEY', 'secret')
+
+# Corpus (or language dictionary) text file
+CORPUS_DIR = join(BASE_DIR, 'corpus/')
+
+# Default Corpus to use
+DEFAULT_CORPUS_PATH = os.environ.get('CORPUS_PATH', join(CORPUS_DIR, 'dictionary.txt'))
+DEFAULT_CORPUS_NAME = 'default'
+
+# Default board to use
+DEFAULT_BOARD_STRING = 'TAP*EAKSOBRSS*XD'
