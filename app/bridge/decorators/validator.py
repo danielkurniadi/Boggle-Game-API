@@ -30,7 +30,7 @@ def request_validator(validator):
                     'validation error: `%s` | request: `%s`',
                     str(e), str(request)
                 )
-                return jsonify(InvalidRequest(str(e)).to_dict())
+                return jsonify(InvalidRequest(str(e)).to_dict()), 400
 
             return func(*args, **kwargs)
 
