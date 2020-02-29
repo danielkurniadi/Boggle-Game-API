@@ -1,5 +1,5 @@
 from app.game.data_access.corpus_model_manager import build_prefix_trie
-from app.game.data_access.boogle_model_manager import (
+from app.game.data_access.board_model_manager import (
     solve_boggle_board,
     board_string_to_matrix
 )
