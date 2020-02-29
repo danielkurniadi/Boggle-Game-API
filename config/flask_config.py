@@ -8,7 +8,7 @@ import pytz
 BASE_DIR = abspath(dirname(dirname(__file__)))
 
 # Load environment variables from file
-dotenv_path = join(BASE_DIR, '_env')
+dotenv_path = join(BASE_DIR, '.env')
 load_dotenv(dotenv_path)
 
 # Statement for enabling the development environment
