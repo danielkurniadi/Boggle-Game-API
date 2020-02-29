@@ -7,9 +7,7 @@ from app.game.data_access import (
 )
 from app.bridge.error.error_code import (
     ServerOk,
-    ResourceNotFound,
-    DatabaseError,
-    OperationNotSupported,
+    Error,
 )
 
 DEFAULT_CORPUS_NAME = flask_app.config['DEFAULT_CORPUS_NAME']
@@ -22,7 +20,7 @@ DEFAULT_CORPUS_PATH = flask_app.config['DEFAULT_CORPUS_PATH']
 
 def get_boggle_game(game_id):
     game_json = game_model_manager.get_game_by_id(game_id, full=True)
-    if isinstance(game_json, (ResourceNotFound, DatabaseError)):
+    if isinstance(game_json, Error):
         return game_json, {}
 
     error_code = ServerOk(method='GET')
@@ -31,14 +29,14 @@ def get_boggle_game(game_id):
 
 def update_boggle_game(game_id, token, word, **kwargs):
     game_json = game_model_manager.update_game(game_id, token, word, full=True)
-    if isinstance(game_json, (ResourceNotFound, DatabaseError, OperationNotSupported)):
+    if isinstance(game_json, Error):
         return game_json, {}
 
     error_code = ServerOk(method='PUT')
     return error_code, game_json
 
 
-def create_boggle_game(duration, random, board_string=None, **kwargs):
+def create_boggle_game(duration, random, board=None, **kwargs):
     token = token_manager.generate_random_token()
 
     corpus_json = corpus_model_manager.get_or_create_corpus(
@@ -46,17 +44,17 @@ def create_boggle_game(duration, random, board_string=None, **kwargs):
     )
 
     board_json = board_model_manager.get_or_create_boggle_board(
-        random=random, board_string=board_string,
+        random=random, board_string=board,
         corpus_id=corpus_json['id'])
     
-    if isinstance(board_json, (OperationNotSupported, DatabaseError)):
+    if isinstance(board_json, Error):
         return board_json, {}
 
     game_json = game_model_manager.create_game(
         duration=duration, token=token,
         board_id=board_json['id'])
 
-    if isinstance(game_json, (OperationNotSupported, DatabaseError)):
+    if isinstance(game_json, Error):
         return game_json, {}
 
     error_code = ServerOk(method='POST')
