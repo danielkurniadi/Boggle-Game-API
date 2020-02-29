@@ -1,6 +1,7 @@
 from app.game.data_access.corpus_model_manager import build_prefix_trie
 from app.game.data_access.board_model_manager import (
     solve_boggle_board,
+    generate_board_string,
     board_string_to_matrix
 )
 
@@ -16,6 +17,11 @@ def test_solve_board(corpus_words, boggle_matrix, solution):
     found_words.sort()
 
     assert found_words == solution
+
+
+def test_generate_board_string():
+    board_string = generate_board_string()
+    assert len(board_string) == 16
 
 
 def test_convert_string_to_matrix(board_string):
