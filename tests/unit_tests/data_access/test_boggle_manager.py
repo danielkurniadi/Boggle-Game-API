@@ -1,7 +1,7 @@
 from app.game.data_access.corpus_model_manager import build_prefix_trie
 from app.game.data_access.boogle_model_manager import (
     solve_boggle_board,
-    boggle_string_to_matrix
+    board_string_to_matrix
 )
 
 # ----------------------
@@ -18,14 +18,14 @@ def test_solve_board(corpus_words, boggle_matrix, solution):
     assert found_words == solution
 
 
-def test_convert_string_to_matrix(boggle_string):
-    boggle_matrix = boggle_string_to_matrix(boggle_string)
+def test_convert_string_to_matrix(board_string):
+    boggle_matrix = board_string_to_matrix(board_string)
     N = len(boggle_matrix)
     M = len(boggle_matrix)
 
-    assert N * M == len(boggle_string)
+    assert N * M == len(board_string)
 
     for i in range(N):
         for j in range(M):
             k = i * N + j
-            assert boggle_string[k] == boggle_matrix[i][j]
+            assert board_string[k] == boggle_matrix[i][j]
