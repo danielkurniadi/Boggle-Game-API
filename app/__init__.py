@@ -10,6 +10,7 @@ from logging.handlers import TimedRotatingFileHandler
 
 # Define the WSGI application object
 flask_app = Flask(__name__)
+flask_app.url_map.strict_slashes = False
 
 # Configurations
 flask_app.config.from_object('config.flask_config')
