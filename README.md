@@ -105,6 +105,18 @@ python run.py # available at 127.0.0.1:5000
 
 ## Run Testing
 
+Execute the script below to run all tests in pytest.
+
 ```bash
 (.venv)$ python3 run_pytest.py
 ```
+------
+
+### Tests Results
+
+- Commit : 148139a
+![Pytest](/docs/assets/pytest_testing.png "Pytest result")
+
+- Commit: 148139a
+
+![Ruby](docs/assets/rspec_testing.png "Rspec result")
