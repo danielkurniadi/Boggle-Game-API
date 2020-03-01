@@ -15,11 +15,11 @@ flask_app.url_map.strict_slashes = False
 # Configurations
 flask_app.config.from_object('config.flask_config')
 
-# MongoDB database connection
-db = MongoEngine(flask_app)
-
 # Define the database object which is imported
 # by modules and controllers
+db = MongoEngine(flask_app)
+
+
 unit_test_mode = os.environ.get('UNIT_TEST_MODE', False)
 
 
