@@ -1,5 +1,6 @@
 import bson
 from app import db
+from app.game.data_access import board_model_manager
 from app.game.models.game_model import Game
 from app.bridge.decorators.db_exception import (
     db_exception
@@ -24,7 +25,7 @@ def get_game_by_id(game_id):
 
     if isinstance(game, Game) and game.check_expired():
         game.delete()
-        return OperationNotSupported("Outdated Game. Time's Up.")
+        return ResourceNotFound("Outdated Game. Time's Up.")
 
     return game
 
@@ -38,7 +39,7 @@ def get_game_by_token(token):
 
     if isinstance(game, Game) and game.check_expired():
         game.delete()
-        return OperationNotSupported("Outdated Game. Time's Up.")
+        return ResourceNotFound("Outdated Game. Time's Up.")
 
     return game
 
@@ -56,23 +57,24 @@ def update_game(game_id, token, word):
     if not bson.ObjectId.is_valid(game_id):
         return ResourceNotFound('Invalid game_id.')
 
-    upper_word = word.upper()
+    word = word.upper()
     game = Game.objects(id=game_id, token=token).first()
 
-    if game is None:
+    if not isinstance(game, Game):
         return game
 
-    board = game.board
-
     if game.check_expired():
-        return OperationNotSupported("Outdated Game. Time's Up.")
+        return ResourceNotFound("Outdated Game. Time's Up.")
 
-    if not board.check_answer(upper_word):
-        return OperationNotSupported("Wrong answer: %s" % word)
-    
-    if not game.check_repeat(upper_word):
-        game.found_words.append(upper_word)
-        game.increment_points(len(upper_word))
+    board_string = game.board.board_string
+    prefix_trie = game.board.corpus.prefix_trie
+    if not board_model_manager.validate_board_answer(
+        word, board_string, prefix_trie):
+        return OperationNotSupported("Wrong answer: %s" % word.lower())
+
+    if game.check_repeat(word) == False:
+        game.found_words.append(word)
+        game.increment_points(len(word))
         game.save()
 
     return game

@@ -16,22 +16,22 @@ mod_game = Blueprint('boogle', __name__)
 @mod_game.route('/games/', methods=['POST'])
 @validate_create_game_request
 def api_post_game():
-    payload = dict(request.json)
-    error_code, boogle_game = game_manager.create_boogle_game(**payload)
+    payload = dict(request.get_json())
+    error_code, game_json = game_manager.create_boggle_game(**payload)
 
     return jsonify({
         **error_code.to_dict(),
-        **boogle_game
+        **game_json
     }), error_code.http_code
 
 
 @mod_game.route('/games/<game_id>', methods=['GET'])
 def api_get_game(game_id):
-    error_code, boogle_game = game_manager.get_boogle_game(game_id)
+    error_code, game_json = game_manager.get_boggle_game(game_id)
 
     return jsonify({
         **error_code.to_dict(),
-        **boogle_game
+        **game_json
     }), error_code.http_code
 
 
@@ -39,9 +39,9 @@ def api_get_game(game_id):
 @validate_update_game_request
 def api_put_game(game_id):
     payload = dict(request.json)
-    error_code, boogle_game = game_manager.update_boogle_game(game_id, **payload)
+    error_code, game_json = game_manager.update_boggle_game(game_id, **payload)
 
     return jsonify({
         **error_code.to_dict(),
-        **boogle_game
+        **game_json
     }), error_code.http_code
