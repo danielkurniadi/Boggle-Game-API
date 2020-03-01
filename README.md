@@ -1,24 +1,13 @@
-## Background
+# Boggle Game API
 
+Boggle Game API is a solution engineered for hosting simple Boggle Game. The REST API is written in Python3 using `Flask` webframework and has testing suite available both in Python (unit-tests and integration tests) and Ruby (end-to-end tests).
+
+## Boggle Game
 Boggle is a word game that is played on a 4x4 board with 16 letter tiles.
 The goal is to find as many words as possible given a time constraint.
-For this exercise, we are making one modification.
+
 Now it is possible for one or more of the letter tiles to be blank (denoted by `*`).
-When a tile is blank, it can be treated as any other letter.
-Note that in one game it does not have to be the same character for each word.
-For example, if the tiles C, T, and * are adjacent. The words cot, cat,
-and cut can all be used.  You will be given a text file containing all
-valid English words (a dictionary). You will also be given an initial board
-configuration as a text file with commas separating the letters.
-Use this as a guide for how to set up the board.
-
-For example, a file may contain:
-
-```
-A, C, E, D, L, U, G, *, E, *, H, T, G, A, F, K
-```
-
-This is equivalent to the board:
+When a tile is blank, it can be treated as any other letter.  Example board:
 
 ```
 A C E D
@@ -27,137 +16,95 @@ E * H T
 G A F K
 ```
 
-Some sample words from this board are ace, dug, eight, hole, huge, hug, tide.
+Some sample words from this board are ace, dot, dug, eight, hole, huge, hug, tide.
 
-## Requirement
 
-- Implement an API in the language/framework of you choice,
-that lets user play a single-player game of Boggle.
-- All responses of the API endpoints should be in JSON format.
-- The API endpoints will be following:
+## Installation & Setup
 
-### Create the game
 
-- Endpoint
+This project requires [Python 3](https://www.python.org/) and [Ruby](https://www.ruby-lang.org/en/documentation/installation/), followed by some libraries.
 
-```
-POST /games
-```
 
-- Parameters:
-  + `duration` (required): the time (in seconds) that specifies the duration of
-    the game
-  + `random` (required): if `true`, then the game will be generated with random
-    board.  Otherwise, it will be generated based on input.
-  + `board` (optional): if `random` is not true, this will be used as the board
-    for new game. If this is not present, new game will get the default board
-    from `test_board.txt`
+### Requirements
 
-- Response:
-  + Success (status 201 Created)
+- `python >= 3.6`
+- `MongoDB`
+- `python3-venv`
+- `ruby >= 2.5`
+- `git`
 
-```json
-{
-  "id": 1,
-  "token": "9dda26ec7e476fb337cb158e7d31ac6c",
-  "duration": 12345,
-  "board": "A, C, E, D, L, U, G, *, E, *, H, T, G, A, F, K"
-}
+
+### Python3 and Python3-venv
+
+#### Install Python3
+You can directly download the binary source from 
+
+If you're using linux/ubuntu (12.0 - 18.04) you can install `python3` by using `apt-get` as follows:
+
+```bash
+$ sudo apt-get update
+$ sudo apt-get install python3.6
+$ python3 --version  # check installation successful
+$ which python3  # check software bash directory
 ```
 
-### Play the game
+#### Install & Setup Venv
 
-- Endpoint
+Then install virtualenv manager. There are many python virtualenv manager but here we choose to pick `venv`. To install, run `apt-get` command:
 
-```
-PUT /games/:id
-```
-
-- Parameters:
-  + `id` (required): The ID of the game
-  + `token` (required): The token for authenticating the game
-  + `word` (required): The word that can be used to play the game
-
-- Response:
-  + Success (status 200 OK)
-
-```json
-{
-  "id": 1,
-  "token": "9dda26ec7e476fb337cb158e7d31ac6c",
-  "duration": 12345,
-  "board": "A, C, E, D, L, U, G, *, E, *, H, T, G, A, F, K",
-  "time_left": 10000,
-  "points": 10
-}
+```bash
+$ sudo apt-get install python3-venv  # install venv
+$ python3 -m venv .venv  # create virtual environment called .venv
 ```
 
-### Show the game
-
-- Endpoint
-
-```
-GET /games/:id
+#### Install Python Packages
+```bash
+$ source .venv/bin/activate  # activate virtual environment (.venv)
+(.venv) $ pip3 install -r requirements.txt # ensure you are using .venv and python 3.6
 ```
 
-- Parameters:
-  + `id` (required): The ID of the game
+### Ruby
 
-- Response:
-  + Success (status 200 OK)
-
-```json
-{
-  "id": 1,
-  "token": "9dda26ec7e476fb337cb158e7d31ac6c",
-  "duration": 12345,
-  "board": "A, C, E, D, L, U, G, *, E, *, H, T, G, A, F, K",
-  "time_left": 10000,
-  "points": 10
-}
-```
-
-## Testing
-
-- We provide a set of integration test so that you can try it with your
-solution. You can add more tests, but you shouldn't modify the current test,
-because we will use it to validate your code. The test suite is not an
-exhaustive set, so your code can still fail even if you pass all the tests.
-
-### How to run test
-
-- Install ruby
-
-- Install gem:
+First, install [Ruby](https://www.ruby-lang.org/en/documentation/installation/). Then run the following commands under the project directory.
 
 ```
-bundle install
+$ruby -v # confirm Ruby present
+ruby 2.5.1p57 (2018-03-29 revision 63029) [x86_64-darwin17]
+
+$ gem install bundler # install bundler to manage dependencies
+$ bundle install  # install dependencies using Gemfile
+...
+...
+Bundle complete! 3 Gemfile dependencies, 8 gems now installed.
+
 ```
 
-- Edit `.env` file and replace sample `SERVER_URL` with your server url
-- Run test:
 
+## Mongo DB Setup
+
+You need to install `Mongo` DB in your machine.
+
+```bash
+$ sudo apt install -y mongodb
+$ sudo systemctl status mongodb  # check mongodb status
+$ sudo systemctl start mongodb   # if mongodb not active/running, start db using systemctl
 ```
-rspec
+
+
+## Run Server
+The entry points for running `Flask` application is the `run.py` script. There are several environment variables that you can provide yourself or using the `.env` file.
+
+```bash
+export DATABASE_URI=mongodb://localhost:27017/testboggledb  # get your db url
+export FLASK_ENV=testing  # testing mode
+export DEBUG=1  # debug mode
+export UNIT_TEST_MODE=1  # disable logging for unit testing
+
+python run.py # available at 127.0.0.1:5000
 ```
 
-## Submitting the solution
+## Run Testing
 
-- Send us your solution whenever you’re done.
-- There should be a short README explaining your solution and how to setup the
-project from scratch.
-
-## What we care about
-
-- We're interested in your method and how you approach the problem just as much as we're interested in the end result.
-It would be nice if you can show us how you tackled it, why you chose the approach you did, etc.
-
-- That said, here's what you should aim for with your code:
-
-  - Clean, readable, **production quality code**; would we want to work with your code as part of a bigger codebase?
-  - Good modelling and design decisions (ex: if you use multithread solution, is your code thread-safe?).
-  - Extensible code; adding features will be another exercise when you come back.
-  - Good use of your programming language idioms.
-  - Solid testing approach _(this is not compulsory, though)_
-
-We haven't hidden any nasty tricks in the test. Don't overthink it. Just write nice, solid code.
+```bash
+(.venv)$ python3 run_pytest.py
+```

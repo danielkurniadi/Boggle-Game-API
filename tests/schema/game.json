@@ -1,0 +1,31 @@
+{
+    "games": [
+        {
+            "id": "abcdabcd1234abcdabcd1234",
+            "board": "abcdabcd1234abcdabcd1234",
+            "duration": 1000,
+            "token": "tokenonetokenonetokenonetokenone"
+        },
+
+        {
+            "id": "abcdabcd1234abcdabcd5678",
+            "board": "abcdabcd1234abcdabcd1234",
+            "duration": 1000,
+            "token": "tokentwotokentwotokentwotokentwo"
+        },
+
+        {
+            "id": "abcdabcd1234abcdabcd9012",
+            "board": "abcdabcd1234abcdabcd1234",
+            "duration": 1000,
+            "token": "tokentritokentritokentritokentri"
+        },
+
+        {
+            "id": "5e5a47997ba7cb8c171ad416",
+            "board": "abcdabcd1234abcdabcd1234",
+            "duration": 0,
+            "token": "tokenfourtokenfourtokenfourtoken"
+        }
+    ]
+}

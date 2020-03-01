@@ -7,8 +7,10 @@ import os
 import string
 import random
 
+from collections import deque
+
 from app.game.models.board_model import Board
-from app.game.models.corpus_model import VALUE_SYM
+from app.game.models.corpus_model import PrefixTrieNode, VALUE_SYM
 from app.game.data_access import corpus_model_manager
 
 from app.bridge.decorators.db_exception import db_exception
@@ -36,15 +38,6 @@ def get_or_create_boggle_board(random, corpus_id, board_string=None,
     # otherwise create new board
     board_string = normalise_board_string(board_string)
     board = Board(board_string=board_string, corpus=corpus_id)
-
-    # prepare for solving board
-    board_matrix = board_string_to_matrix(board_string)
-    corpus = board.corpus
-    trie_root = corpus.prefix_trie
-
-    # solve board and save solution
-    solution = solve_boggle_board(board_matrix, trie_root)
-    board.solution = solution
     board.save()
 
     return board
@@ -67,7 +60,8 @@ NEIGHBOURS = [(dx, dy)
               if not (dx == dy == 0)]
 
 
-def solve_boggle_board(board_matrix, trie_root):
+def solve_boggle_board(board_string, trie_root):
+    board_matrix = board_string_to_matrix(board_string)
     N = len(board_matrix)
     M = len(board_matrix[0])
 
@@ -105,6 +99,41 @@ def solve_boggle_board(board_matrix, trie_root):
                     stack.append((row + dy, col + dx, nextTrieNode, seen | {(row, col)}))
 
     return list(set(_solve_boggle(stack)))
+
+
+def validate_board_answer(word, board_string, trie_root):
+    trie_root = PrefixTrieNode(trie_root)
+
+    board_matrix = board_string_to_matrix(board_string)
+    N = len(board_matrix)
+    M = len(board_matrix[0])
+
+    queue = deque([])
+
+    if len(word) == 0 or not trie_root.check_contain(word):
+        return False
+
+    for row in range(N):
+        for col in range(M):
+            if board_matrix[row][col] in [word[0], '*']:
+                queue.append((row, col, 0, set()))
+
+    pointer = 0
+    while queue:
+        for i in range(len(queue)):
+            row, col, pointer, seen = queue.popleft()
+
+            if pointer == len(word):
+                return True
+
+            elif not (0 <= row < N and 0 <= col < M) or (row, col) in seen:
+                    continue
+
+            elif board_matrix[row][col] in ['*', word[pointer]]:
+                for dx, dy in NEIGHBOURS:
+                    queue.append((row + dy, col + dx, pointer + 1, seen | {(row, col)}))
+
+    return False
 
 
 def generate_board_string(word_counter=None):
