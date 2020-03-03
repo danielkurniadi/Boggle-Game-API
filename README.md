@@ -27,6 +27,7 @@ This project requires [Python 3](https://www.python.org/) and [Ruby](https://www
 
 ### Requirements
 
+This application mainly run and tested for Ubuntu 18.04.
 - `python >= 3.6`
 - `MongoDB`
 - `python3-venv`
@@ -91,16 +92,31 @@ $ sudo systemctl start mongodb   # if mongodb not active/running, start db using
 ```
 
 
-## Run Server
-The entry points for running `Flask` application is the `run.py` script. There are several environment variables that you can provide yourself or using the `.env` file.
+## Runing Server
+
+### Manual using Command Line
+
+The entry points for running `Flask` application is the `run.py` script. There are several environment variables that you need to provide:
 
 ```bash
-export DATABASE_URI=mongodb://localhost:27017/testboggledb  # get your db url
-export FLASK_ENV=testing  # testing mode
-export DEBUG=1  # debug mode
-export UNIT_TEST_MODE=1  # disable logging for unit testing
+$ export DATABASE_URI=mongodb://localhost:27017/testdb  # get your db url
+$ export HOST=127.0.0.1
+$ export PORT=5001
+$ export ENV=testing  # testing mode
+$ export DEBUG=1  # debug mode
+$ export UNIT_TEST_MODE=1  # disable logging for unit testing
 
-python run.py # available at 127.0.0.1:5000
+$ python3 run.py # available at 127.0.0.1:5001
+```
+
+### Using Docker Container
+
+Running with docker container is easy. First make sure you have [docker](https://docs.docker.com/install/) ready and setup in your machine.
+
+```bash
+$ sudo bash deploy/build_app.sh  # build image
+$ sudo bash deploy/run_mongo.sh  # mongo server running on container
+$ sudo bash deploy/run_app.sh  # application running on localhost:5001
 ```
 
 ## Run Testing
